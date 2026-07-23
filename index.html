@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f2" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <title>产品 3D 查看器</title>
+  </head>
+  <body>
+    <main id="app">
+      <section class="viewer-shell" aria-label="3D 产品查看区">
+        <canvas id="viewer-canvas"></canvas>
+
+        <header class="topbar">
+          <div class="identity">
+            <span class="identity-mark" aria-hidden="true">3D</span>
+            <div class="identity-copy">
+              <p class="eyebrow">PRODUCT VIEW</p>
+              <h1 id="product-name">工业产品预览</h1>
+            </div>
+          </div>
+
+          <div class="topbar-actions">
+            <button class="icon-button" id="info-button" type="button" aria-label="查看模型信息" data-tooltip="模型信息" aria-expanded="false">
+              <i data-lucide="info"></i>
+            </button>
+            <button class="icon-button" id="fullscreen-button" type="button" aria-label="进入全屏" data-tooltip="全屏">
+              <i data-lucide="maximize"></i>
+            </button>
+          </div>
+        </header>
+
+        <aside class="details-panel" id="details-panel" aria-label="模型信息" aria-hidden="true">
+          <div class="details-header">
+            <div>
+              <p class="eyebrow">MODEL DETAILS</p>
+              <h2 id="details-name">工业产品预览</h2>
+            </div>
+            <button class="icon-button icon-button--quiet" id="close-details-button" type="button" aria-label="关闭模型信息" data-tooltip="关闭">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <dl class="model-meta">
+            <div>
+              <dt>查看状态</dt>
+              <dd><span class="status-dot" aria-hidden="true"></span><span id="access-status">演示模式</span></dd>
+            </div>
+            <div>
+              <dt>授权客户</dt>
+              <dd id="client-name">本地预览</dd>
+            </div>
+            <div>
+              <dt>有效期限</dt>
+              <dd id="expiry-time">未设置</dd>
+            </div>
+          </dl>
+          <div class="confidential-note" id="confidential-note" hidden>
+            <i data-lucide="shield-check" aria-hidden="true"></i>
+            <p>机密资料 · 仅限授权查看</p>
+          </div>
+        </aside>
+
+        <div class="watermark" id="watermark" hidden>
+          <i data-lucide="shield-check" aria-hidden="true"></i>
+          <span id="watermark-text"></span>
+        </div>
+
+        <nav class="control-dock" aria-label="模型控制">
+          <button class="icon-button dock-button" id="reset-button" type="button" aria-label="重置视角" data-tooltip="重置视角">
+            <i data-lucide="rotate-ccw"></i>
+          </button>
+          <button class="icon-button dock-button is-active" id="rotate-button" type="button" aria-label="暂停自动旋转" data-tooltip="暂停旋转" aria-pressed="true">
+            <i data-lucide="pause"></i>
+          </button>
+          <span class="dock-divider" aria-hidden="true"></span>
+          <button class="icon-button dock-button" id="theme-button" type="button" aria-label="切换深色背景" data-tooltip="切换背景" aria-pressed="false">
+            <i data-lucide="sun"></i>
+          </button>
+        </nav>
+
+        <div class="loading-state" id="loading-state" role="status">
+          <span class="loading-ring" aria-hidden="true"></span>
+          <p id="loading-label">正在准备模型</p>
+          <div class="progress-track" aria-hidden="true"><span id="progress-bar"></span></div>
+        </div>
+
+        <div class="error-state" id="error-state" role="alert" hidden>
+          <i data-lucide="triangle-alert" aria-hidden="true"></i>
+          <h2 id="error-title">无法打开模型</h2>
+          <p id="error-message">链接可能已经过期，请联系发送方重新获取。</p>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
