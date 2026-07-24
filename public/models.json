@@ -18,6 +18,12 @@
       "modelUrl": "models/share-f787c866.glb",
       "client": "Firenace",
       "watermark": "Firenace · Glowing Disk"
+    },
+    "share-de6aab08": {
+      "name": "showcase2",
+      "modelUrl": "models/share-de6aab08.glb",
+      "client": "Firenace",
+      "watermark": "Firenace · Glowing Disk"
     }
   }
 }
