@@ -6,6 +6,12 @@
       "modelUrl": "models/product.glb",
       "client": "",
       "watermark": "Powered by EthanDesign"
+    },
+    "share-017d67c8": {
+      "name": "showcase",
+      "modelUrl": "models/share-017d67c8.glb",
+      "client": "Firenace",
+      "watermark": "Firenace · Glowing Disk"
     }
   }
 }
