@@ -17,6 +17,7 @@ import {
   TriangleAlert,
   X,
 } from 'lucide';
+import { selectPublicModel } from './model-catalog.js';
 import './styles.css';
 
 createIcons({
@@ -267,8 +268,8 @@ function applyPublicConfig(config) {
   const name = config.name || '工业产品预览';
   productName.textContent = name;
   detailsName.textContent = name;
-  clientName.textContent = '公开链接';
-  accessStatus.textContent = '公开预览';
+  clientName.textContent = config.client || '公开链接';
+  accessStatus.textContent = config.client ? '客户链接' : '公开预览';
   expiryTime.textContent = '长期有效';
   document.title = `${name} · 3D 查看`;
 
@@ -312,12 +313,14 @@ function loadModel(config, token = '') {
 }
 
 async function fetchPublicConfig() {
-  const configUrl = new URL('viewer-config.json', document.baseURI);
+  const configUrl = new URL('models.json', document.baseURI);
   const response = await fetch(configUrl, { cache: 'no-store' });
   if (!response.ok) {
-    throw new Error('找不到 viewer-config.json');
+    throw new Error('找不到 models.json');
   }
-  return response.json();
+  const catalog = await response.json();
+  const requestedId = new URLSearchParams(window.location.search).get('model') || '';
+  return selectPublicModel(catalog, requestedId);
 }
 
 async function bootstrap() {

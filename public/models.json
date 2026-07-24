@@ -1,0 +1,11 @@
+{
+  "default": "product",
+  "models": {
+    "product": {
+      "name": "Fin展示",
+      "modelUrl": "models/product.glb",
+      "client": "",
+      "watermark": "Powered by EthanDesign"
+    }
+  }
+}
