@@ -24,6 +24,12 @@
       "modelUrl": "models/share-de6aab08.glb",
       "client": "Firenace",
       "watermark": "Firenace · Design"
+    },
+    "share-9c37e32f": {
+      "name": "KUN",
+      "modelUrl": "models/share-9c37e32f.glb",
+      "client": "",
+      "watermark": "Glowing Disk"
     }
   }
 }
