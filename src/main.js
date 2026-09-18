@@ -18,6 +18,7 @@ import {
   X,
 } from 'lucide';
 import { selectPublicModel } from './model-catalog.js';
+import { fitModelShadow } from './shadows.js';
 import './styles.css';
 
 createIcons({
@@ -82,9 +83,7 @@ const keyLight = new THREE.DirectionalLight(0xffffff, 3.1);
 keyLight.position.set(4, 7, 5);
 keyLight.castShadow = true;
 keyLight.shadow.mapSize.set(2048, 2048);
-keyLight.shadow.camera.near = 0.1;
-keyLight.shadow.camera.far = 30;
-scene.add(keyLight);
+scene.add(keyLight, keyLight.target);
 
 const fillLight = new THREE.DirectionalLight(0xbfd7ff, 1.1);
 fillLight.position.set(-5, 3, -2);
@@ -210,6 +209,7 @@ function finishModelSetup() {
 
   const adjustedBox = new THREE.Box3().setFromObject(modelRoot);
   ground.position.y = adjustedBox.min.y - Math.max(maxDimension * 0.015, 0.015);
+  fitModelShadow(keyLight, adjustedBox, ground.position.y);
   homeView = { position: camera.position.clone(), target: controls.target.clone() };
 }
 
