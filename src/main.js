@@ -5,6 +5,7 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import {
   createIcons,
+  FlipVertical2,
   Info,
   Maximize,
   Minimize,
@@ -23,6 +24,7 @@ import './styles.css';
 
 createIcons({
   icons: {
+    FlipVertical2,
     Info,
     Maximize,
     Minimize,
@@ -55,6 +57,7 @@ const infoButton = document.querySelector('#info-button');
 const closeDetailsButton = document.querySelector('#close-details-button');
 const resetButton = document.querySelector('#reset-button');
 const rotateButton = document.querySelector('#rotate-button');
+const flipButton = document.querySelector('#flip-button');
 const themeButton = document.querySelector('#theme-button');
 const fullscreenButton = document.querySelector('#fullscreen-button');
 const watermark = document.querySelector('#watermark');
@@ -89,8 +92,15 @@ const fillLight = new THREE.DirectionalLight(0xbfd7ff, 1.1);
 fillLight.position.set(-5, 3, -2);
 scene.add(fillLight);
 
+const undersideLight = new THREE.DirectionalLight(0xdde8ff, 0.9);
+undersideLight.position.set(1, -5, 3);
+scene.add(undersideLight, undersideLight.target);
+
+const modelPivot = new THREE.Group();
+scene.add(modelPivot);
+
 const modelRoot = new THREE.Group();
-scene.add(modelRoot);
+modelPivot.add(modelRoot);
 
 const ground = new THREE.Mesh(
   new THREE.PlaneGeometry(200, 200),
@@ -117,6 +127,8 @@ let homeView = {
 };
 let isDark = false;
 let activeToken = '';
+let isFlipped = false;
+let flipTarget = 0;
 
 function addMesh(geometry, material, position, rotation = [0, 0, 0]) {
   const mesh = new THREE.Mesh(geometry, material);
@@ -182,6 +194,9 @@ function clearModel() {
     }
   }
   modelRoot.rotation.set(0, 0, 0);
+  modelRoot.position.set(0, 0, 0);
+  modelPivot.rotation.set(0, 0, 0);
+  setFlipped(false);
 }
 
 function finishModelSetup() {
@@ -207,7 +222,7 @@ function finishModelSetup() {
   controls.maxDistance = distance * 4.5;
   controls.update();
 
-  const adjustedBox = new THREE.Box3().setFromObject(modelRoot);
+  const adjustedBox = new THREE.Box3().setFromObject(modelPivot);
   ground.position.y = adjustedBox.min.y - Math.max(maxDimension * 0.015, 0.015);
   fitModelShadow(keyLight, adjustedBox, ground.position.y);
   homeView = { position: camera.position.clone(), target: controls.target.clone() };
@@ -378,7 +393,21 @@ function replaceButtonIcon(button, iconName) {
 function resetView() {
   camera.position.copy(homeView.position);
   controls.target.copy(homeView.target);
+  setFlipped(false);
   controls.update();
+}
+
+function setFlipped(flipped) {
+  isFlipped = flipped;
+  flipTarget = flipped ? Math.PI : 0;
+  flipButton.classList.toggle('is-active', flipped);
+  flipButton.setAttribute('aria-pressed', String(flipped));
+  flipButton.setAttribute('aria-label', flipped ? '恢复模型正向' : '翻转模型');
+  flipButton.dataset.tooltip = flipped ? '恢复正向' : '翻转模型';
+}
+
+function toggleFlip() {
+  setFlipped(!isFlipped);
 }
 
 function toggleRotation() {
@@ -412,6 +441,7 @@ infoButton.addEventListener('click', () => setPanel(!detailsPanel.classList.cont
 closeDetailsButton.addEventListener('click', () => setPanel(false));
 resetButton.addEventListener('click', resetView);
 rotateButton.addEventListener('click', toggleRotation);
+flipButton.addEventListener('click', toggleFlip);
 themeButton.addEventListener('click', toggleTheme);
 fullscreenButton.addEventListener('click', toggleFullscreen);
 
@@ -431,7 +461,14 @@ const resizeObserver = new ResizeObserver(() => {
 });
 resizeObserver.observe(shell);
 
+const clock = new THREE.Clock();
+
 function animate() {
+  const delta = Math.min(clock.getDelta(), 0.05);
+  modelPivot.rotation.x = THREE.MathUtils.damp(modelPivot.rotation.x, flipTarget, 8, delta);
+  if (Math.abs(modelPivot.rotation.x - flipTarget) < 0.0001) {
+    modelPivot.rotation.x = flipTarget;
+  }
   controls.update();
   renderer.render(scene, camera);
 }
